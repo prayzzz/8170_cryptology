@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="program.Controller">
+   <children>
+      <TextArea fx:id="plainTextTextArea" layoutX="14.0" layoutY="35.0" prefHeight="106.0" prefWidth="539.0" />
+      <TextArea fx:id="cipherTextTextArea" layoutX="14.0" layoutY="200.0" prefHeight="113.0" prefWidth="539.0" />
+      <Button fx:id="Button1" layoutX="501.0" layoutY="156.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="Button2" layoutX="441.0" layoutY="156.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="Button3" layoutX="381.0" layoutY="156.0" mnemonicParsing="false" text="Button" />
+      <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Plaintext" />
+      <Text layoutX="14.0" layoutY="194.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ciphertext" />
+      <TextField fx:id="plainTextBlockLength" layoutX="14.0" layoutY="154.0" text="Text" />
+      <Text fx:id="cipherTextBlockLength" layoutX="14.0" layoutY="326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <Button fx:id="Button4" layoutX="501.0" layoutY="329.0" mnemonicParsing="false" text="Button" />
+   </children>
+</Pane>
