@@ -7,7 +7,7 @@ import java.util.Random;
  */
 public class ColumnTransposition
 {
-    public String[] Transpose(String plainText, Integer blockLength)
+    public static String[] Transpose(String plainText, Integer blockLength)
     {
         Integer[] sigma = new Integer[blockLength];
         for (Integer i = 0; i < blockLength; i++)
@@ -21,10 +21,28 @@ public class ColumnTransposition
 
         ShuffleChars(sigma, plainTextBlocks);
 
-        return plainTextBlocks;
+        String cipherText = ReadColumnWise(blockLength, plainTextBlocks);
+
+        String[] cipherTextBlocks = splitString(cipherText, 5);
+
+        return cipherTextBlocks;
     }
 
-    private void ShuffleChars(Integer[] sigma, String[] plainTextBlocks)
+    private static String ReadColumnWise(Integer blockLength, String[] plainTextBlocks)
+    {
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < blockLength; i++)
+        {
+            for (int j = 0; j < plainTextBlocks.length; j++)
+            {
+                text.append(plainTextBlocks[j].charAt(i));
+            }
+        }
+
+        return text.toString();
+    }
+
+    private static void ShuffleChars(Integer[] sigma, String[] plainTextBlocks)
     {
         for (int i = 0; i < plainTextBlocks.length; i++)
         {
@@ -40,7 +58,7 @@ public class ColumnTransposition
         }
     }
 
-    private String[] splitString(String text, Integer blockLength)
+    private static String[] splitString(String text, Integer blockLength)
     {
         Integer blockCount = text.length() / blockLength;
         Integer blockRest = text.length() % blockLength;
@@ -71,7 +89,7 @@ public class ColumnTransposition
     }
 
     // Fisher-Yates-Shuffle
-    private void ShuffleArray(Integer[] array)
+    private static void ShuffleArray(Integer[] array)
     {
         int index;
         Random random = new Random();
