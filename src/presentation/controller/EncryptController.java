@@ -10,12 +10,15 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.util.converter.NumberStringConverter;
 import presentation.Main;
+import presentation.ProgramStage;
 import presentation.models.EncryptModel;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * Created by Patrick on 05.01.2015.
@@ -47,22 +50,41 @@ public class EncryptController
         Bindings.bindBidirectional(removeWhitespacesCheckBox.selectedProperty(), model.removeWhitespacesProperty());
 
         encryptButton.disableProperty().bind(model.plainTextProperty().isEmpty());
+        encryptButton.disableProperty().bind(blockLengthTextField.textProperty().isEmpty());
         saveButton.disableProperty().bind(model.cypherTextProperty().isEmpty());
+
+        blockLengthTextField.setText("");
     }
 
     public void OpenMainView(ActionEvent actionEvent)
-    {        try
     {
-        Main.getLayout().setCenter((GridPane) FXMLLoader.load(getClass().getResource("views/MainView.fxml")));
-    }
-    catch (IOException e)
-    {
-        e.printStackTrace();
-    }
+        try
+        {
+            Main.getLayout().setCenter((GridPane) FXMLLoader.load(getClass().getResource("/presentation/views/MainView.fxml")));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void Save(ActionEvent actionEvent)
     {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Ciphertext");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Textdokument", "*.txt")
+        );
+        File file = fileChooser.showSaveDialog(ProgramStage.getInstance());
+        if (file != null)
+        {
+            try
+            {
+                Files.write(file.toPath(), model.getCypherText().getBytes());
+            } catch (IOException ex)
+            {
+                System.out.println(ex.getMessage());
+            }
+        }
     }
 
     public void Encrypt(ActionEvent actionEvent)
@@ -70,6 +92,7 @@ public class EncryptController
         if (this.model.getRemoveWhitespaces())
         {
             this.model.setPlainText(this.model.getPlainText().replaceAll(" ", ""));
+            this.model.setPlainText(this.model.getPlainText().replaceAll("\n", ""));
         }
 
         String[] cipherTextBlocks = ColumnTransposition.Transpose(this.model.getPlainText(), this.model.getBlockLength());
@@ -79,11 +102,10 @@ public class EncryptController
         {
             cipherText.append(cipherTextBlocks[i]);
 
-            if ((i + 1) % 10 == 0)
+            if ((i + 1) % 10 == 0 || i == (cipherTextBlocks.length - 1))
             {
                 cipherText.append('\n');
-            }
-            else
+            } else
             {
                 cipherText.append('|');
             }
@@ -91,8 +113,9 @@ public class EncryptController
 
         this.model.setCypherText(cipherText.toString());
 
-        this.model.setPlainText(null);
-        textArea.textProperty().bind(model.cypherTextProperty());
+        this.model.setPlainText("");
+        Bindings.unbindBidirectional(textArea.textProperty(), model.plainTextProperty());
+        Bindings.bindBidirectional(textArea.textProperty(), model.cypherTextProperty());
         textArea.setEditable(false);
     }
 }

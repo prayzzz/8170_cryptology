@@ -17,7 +17,9 @@ public class ColumnTransposition
 
         ShuffleArray(sigma);
 
-        String[] plainTextBlocks = splitString(plainText, blockLength);
+        String filledPlainText = fillString(plainText, blockLength);
+
+        String[] plainTextBlocks = splitString(filledPlainText, blockLength);
 
         ShuffleChars(sigma, plainTextBlocks);
 
@@ -26,6 +28,23 @@ public class ColumnTransposition
         String[] cipherTextBlocks = splitString(cipherText, 5);
 
         return cipherTextBlocks;
+    }
+
+    private static String fillString(String text, int blockLength)
+    {
+        int textModulo = text.length() % blockLength;
+
+        int rest = textModulo == 0 ? 0 : blockLength - textModulo;
+
+        StringBuilder filledText = new StringBuilder(text);
+
+        Random r = new Random();
+        for (Integer i = 0; i < rest; i++)
+        {
+            filledText.append(Character.toChars(48 + r.nextInt(47))[0]);
+        }
+
+        return filledText.toString();
     }
 
     private static String ReadColumnWise(Integer blockLength, String[] plainTextBlocks)
@@ -76,14 +95,7 @@ public class ColumnTransposition
             return splittedString;
         }
 
-        Random r = new Random();
-        String puffer = "";
-        for (Integer i = 0; i < blockLength - blockRest; i++)
-        {
-            puffer += Character.toChars(48 + r.nextInt(47))[0];
-        }
-
-        splittedString[splittedString.length - 1] = text.substring(blockCount * blockLength) + puffer;
+        splittedString[splittedString.length - 1] = text.substring(blockCount * blockLength);
 
         return splittedString;
     }

@@ -10,8 +10,8 @@ public class ColumnTranspositionTest
     @Test
     public void testTranspose() throws Exception
     {
-        String text = "Hallo mein Name ist Georg.";
-        Integer blockLength = 5;
+        String text = "HallomeinNameistGeorg.";
+        Integer blockLength = 3;
 
         String[] blocks = new ColumnTransposition().Transpose(text, blockLength);
 
