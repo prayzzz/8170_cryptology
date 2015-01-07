@@ -40,7 +40,7 @@ public class DecryptController
         Bindings.bindBidirectional(knownWordTextField.textProperty(), model.knownWordProperty());
 
 
-        decryptButton.disableProperty().bind(model.knownWordProperty().isEmpty().or(model.cypherTextProperty().isEmpty()));
+        decryptButton.disableProperty().bind(model.knownWordProperty().length().lessThan(2).or(model.cypherTextProperty().isEmpty()));
     }
 
     public void OpenMainView(ActionEvent actionEvent)

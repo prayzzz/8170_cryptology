@@ -1,6 +1,7 @@
 package presentation.controller;
 
 import application.ColumnTransposition;
+import application.StringHelper;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -95,7 +96,8 @@ public class EncryptController
             this.model.setPlainText(this.model.getPlainText().replaceAll("\n", ""));
         }
 
-        String[] cipherTextBlocks = ColumnTransposition.Transpose(this.model.getPlainText(), this.model.getBlockLength());
+        String transposedText = ColumnTransposition.Transpose(this.model.getPlainText(), this.model.getBlockLength());
+        String[] cipherTextBlocks = StringHelper.splitString(transposedText, 5);
 
         StringBuilder cipherText = new StringBuilder();
         for (int i = 0; i < cipherTextBlocks.length; i++)

@@ -7,7 +7,7 @@ import java.util.Random;
  */
 public class ColumnTransposition
 {
-    public static String[] Transpose(String plainText, Integer blockLength)
+    public static String Transpose(String plainText, Integer blockLength)
     {
         Integer[] sigma = new Integer[blockLength];
         for (Integer i = 0; i < blockLength; i++)
@@ -19,15 +19,11 @@ public class ColumnTransposition
 
         String filledPlainText = fillString(plainText, blockLength);
 
-        String[] plainTextBlocks = splitString(filledPlainText, blockLength);
+        String[] plainTextBlocks = StringHelper.splitString(filledPlainText, blockLength);
 
         ShuffleChars(sigma, plainTextBlocks);
 
-        String cipherText = ReadColumnWise(blockLength, plainTextBlocks);
-
-        String[] cipherTextBlocks = splitString(cipherText, 5);
-
-        return cipherTextBlocks;
+        return ReadColumnWise(blockLength, plainTextBlocks);
     }
 
     private static String fillString(String text, int blockLength)
@@ -75,29 +71,6 @@ public class ColumnTransposition
 
             plainTextBlocks[i] = block.toString();
         }
-    }
-
-    private static String[] splitString(String text, Integer blockLength)
-    {
-        Integer blockCount = text.length() / blockLength;
-        Integer blockRest = text.length() % blockLength;
-
-        String[] splittedString = blockRest == 0 ? new String[blockCount] : new String[blockCount + 1];
-
-        for (Integer i = 0; i < blockCount; i++)
-        {
-            Integer position = i * blockLength;
-            splittedString[i] = text.substring(position, position + blockLength);
-        }
-
-        if (blockRest == 0)
-        {
-            return splittedString;
-        }
-
-        splittedString[splittedString.length - 1] = text.substring(blockCount * blockLength);
-
-        return splittedString;
     }
 
     // Fisher-Yates-Shuffle

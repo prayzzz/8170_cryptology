@@ -13,11 +13,8 @@ public class ColumnTranspositionTest
         String text = "HallomeinNameistGeorg.";
         Integer blockLength = 3;
 
-        String[] blocks = new ColumnTransposition().Transpose(text, blockLength);
+        String blocks = new ColumnTransposition().Transpose(text, blockLength);
 
-        for (int i = 0; i < blocks.length; i++)
-        {
-            System.out.println(blocks[i]);
-        }
+        System.out.println(blocks);
     }
 }
