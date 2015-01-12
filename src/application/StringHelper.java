@@ -27,4 +27,22 @@ public class StringHelper
 
         return splittedString;
     }
+
+    public static String[] ShuffleStringBlocks(Integer[] sigma, String[] inputBlocks)
+    {
+        String[] shuffledBlocks = inputBlocks.clone();
+        for (int i = 0; i < shuffledBlocks.length; i++)
+        {
+            String inputBlock = shuffledBlocks[i];
+            StringBuilder block = new StringBuilder(inputBlock);
+
+            for (int j = 0; j < block.length(); j++)
+            {
+                block.setCharAt(sigma[j], inputBlock.charAt(j));
+            }
+
+            shuffledBlocks[i] = block.toString();
+        }
+        return shuffledBlocks;
+    }
 }

@@ -21,7 +21,7 @@ public class ColumnTransposition
 
         String[] plainTextBlocks = StringHelper.splitString(filledPlainText, blockLength);
 
-        ShuffleChars(sigma, plainTextBlocks);
+        plainTextBlocks = StringHelper.ShuffleStringBlocks(sigma, plainTextBlocks);
 
         return ReadColumnWise(blockLength, plainTextBlocks);
     }
@@ -55,22 +55,6 @@ public class ColumnTransposition
         }
 
         return text.toString();
-    }
-
-    private static void ShuffleChars(Integer[] sigma, String[] plainTextBlocks)
-    {
-        for (int i = 0; i < plainTextBlocks.length; i++)
-        {
-            String plainTextBlock = plainTextBlocks[i];
-            StringBuilder block = new StringBuilder(plainTextBlock);
-
-            for (int j = 0; j < block.length(); j++)
-            {
-                block.setCharAt(sigma[j], plainTextBlock.charAt(j));
-            }
-
-            plainTextBlocks[i] = block.toString();
-        }
     }
 
     // Fisher-Yates-Shuffle
