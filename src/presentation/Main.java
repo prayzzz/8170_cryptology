@@ -27,8 +27,9 @@ public class Main extends Application
     {
         ProgramStage stage = ProgramStage.getInstance();
         stage.setTitle("cryptobob");
-        stage.setWidth(600);
-        stage.setHeight(400);
+        stage.setWidth(520);
+        stage.setHeight(325);
+        //stage.setResizable(false);
 
         initRootLayout();
         showMainView();
@@ -58,7 +59,7 @@ public class Main extends Application
     {
         try
         {
-            rootLayout.setCenter((GridPane)FXMLLoader.load(getClass().getResource("views/MainView.fxml")));
+            rootLayout.setCenter(FXMLLoader.load(getClass().getResource("views/MainView.fxml")));
         }
         catch (IOException e)
         {
