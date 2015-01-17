@@ -1,6 +1,9 @@
 package application;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -45,17 +48,21 @@ public class ColumnTranspositionDecrypter
                 String[] decryptedBlocks = StringHelper.ShuffleStringBlocks(sigma, cipherTextBlocks);
 
                 StringBuilder builder = new StringBuilder();
-                for(String s : decryptedBlocks) {
+                for (String s : decryptedBlocks)
+                {
                     builder.append(s);
                 }
 
-                if(overallResults.containsKey(blockLength))
+                if (overallResults.containsKey(blockLength))
                 {
                     overallResults.get(blockLength).add(builder.toString());
                 }
                 else
                 {
-                    overallResults.put(blockLength, Arrays.asList(builder.toString()));
+                    overallResults.put(blockLength, new ArrayList<String>()
+                    {{
+                            add(builder.toString());
+                        }});
                 }
             }
         }
@@ -92,7 +99,8 @@ public class ColumnTranspositionDecrypter
             // Überprüfen, ob in jedem Block an jeder Postion die gleiche Vertauschung protokolliert wurde
             Boolean isCorrect = true;
 
-            chars : for (int charPosition = 0; charPosition < blockLength; charPosition++)
+            chars:
+            for (int charPosition = 0; charPosition < blockLength; charPosition++)
             {
                 Integer currentValue = -1;
 
@@ -105,7 +113,7 @@ public class ColumnTranspositionDecrypter
                         continue;
                     }
 
-                    if (charMapping.containsKey(charPosition) && currentValue != -1 && charMapping.get(charPosition) != currentValue )
+                    if (charMapping.containsKey(charPosition) && currentValue != -1 && charMapping.get(charPosition) != currentValue)
                     {
                         isCorrect = false;
                         break chars;
@@ -133,7 +141,8 @@ public class ColumnTranspositionDecrypter
                 if (IsSigmaComplete(sigma))
                 {
                     sigmas.add(sigma);
-                } else
+                }
+                else
                 {
                     sigmas.addAll(GetFilledSigmas(sigma));
                 }
@@ -176,7 +185,6 @@ public class ColumnTranspositionDecrypter
 
         return filledSigmas;
     }
-
 
 
     private static boolean IsSigmaComplete(Integer[] sigma)

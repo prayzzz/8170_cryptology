@@ -15,12 +15,12 @@ public class ColumnTransposition
             sigma[i] = i;
         }
 
-        ShuffleArray(sigma);
+        ArrayHelper.shuffle(sigma);
+        ArrayHelper.print(sigma);
 
         String filledPlainText = fillString(plainText, blockLength);
 
         String[] plainTextBlocks = StringHelper.splitString(filledPlainText, blockLength);
-
         plainTextBlocks = StringHelper.ShuffleStringBlocks(sigma, plainTextBlocks);
 
         return ReadColumnWise(blockLength, plainTextBlocks);
@@ -29,15 +29,14 @@ public class ColumnTransposition
     private static String fillString(String text, int blockLength)
     {
         int textModulo = text.length() % blockLength;
-
-        int rest = textModulo == 0 ? 0 : blockLength - textModulo;
+        int charsToFill = textModulo == 0 ? 0 : blockLength - textModulo;
 
         StringBuilder filledText = new StringBuilder(text);
 
         Random r = new Random();
-        for (Integer i = 0; i < rest; i++)
+        for (Integer i = 0; i < charsToFill; i++)
         {
-            filledText.append(Character.toChars(48 + r.nextInt(47))[0]);
+            filledText.append(Character.toChars(65 + r.nextInt(25))[0]);
         }
 
         return filledText.toString();
@@ -55,22 +54,5 @@ public class ColumnTransposition
         }
 
         return text.toString();
-    }
-
-    // Fisher-Yates-Shuffle
-    private static void ShuffleArray(Integer[] array)
-    {
-        int index;
-        Random random = new Random();
-        for (int i = array.length - 1; i > 0; i--)
-        {
-            index = random.nextInt(i + 1);
-            if (index != i)
-            {
-                array[index] ^= array[i];
-                array[i] ^= array[index];
-                array[index] ^= array[i];
-            }
-        }
     }
 }

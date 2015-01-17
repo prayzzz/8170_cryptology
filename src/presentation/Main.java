@@ -27,9 +27,10 @@ public class Main extends Application
     {
         ProgramStage stage = ProgramStage.getInstance();
         stage.setTitle("cryptobob");
+        stage.setMinWidth(520);
+        stage.setMinHeight(325);
         stage.setWidth(520);
         stage.setHeight(325);
-        //stage.setResizable(false);
 
         initRootLayout();
         showMainView();
