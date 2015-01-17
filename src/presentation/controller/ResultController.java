@@ -1,15 +1,16 @@
 package presentation.controller;
 
-import javafx.beans.binding.Bindings;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListCell;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
-import javafx.util.Callback;
 import javafx.util.Pair;
+import presentation.Main;
 import presentation.models.ResultModel;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,18 @@ public class ResultController
             {
                 this.model.getResults().add(new Pair<>(entry.getKey(), s));
             }
+        }
+    }
+
+    public void OpenMainView(ActionEvent actionEvent)
+    {
+        try
+        {
+            Main.getLayout().setCenter(FXMLLoader.load(getClass().getResource("/presentation/views/MainView.fxml")));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 }
