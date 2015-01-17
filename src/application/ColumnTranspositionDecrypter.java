@@ -1,9 +1,6 @@
 package application;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -87,11 +84,16 @@ public class ColumnTranspositionDecrypter
         return cipherTextBlocks;
     }
 
-    private static List<Integer[]> GetSigmas(int blockLength, List<List<Map<Integer, Integer>>> foundCharsProtocol)
+    private static Set<Integer[]> GetSigmas(int blockLength, List<List<Map<Integer, Integer>>> foundCharsProtocol)
     {
-        List<Integer[]> sigmas = new ArrayList<>();
+        Set<Integer[]> sigmas = new TreeSet<Integer[]>(new Comparator<Integer[]>() {
+            @Override
+            public int compare(Integer[] o1, Integer[] o2) {
+                return Arrays.equals(o1, o2) ? 0 : 1;
+            }
+        });
 
-        for (List<Map<Integer, Integer>> foundCharsBlockProtocol : foundCharsProtocol)
+        protocols : for (List<Map<Integer, Integer>> foundCharsBlockProtocol : foundCharsProtocol)
         {
             // Entferne alle Blöcke, in denen kein Teil des Know-Words gefunden wurde
             foundCharsBlockProtocol.removeIf(x -> x.size() == 0);
@@ -99,40 +101,35 @@ public class ColumnTranspositionDecrypter
             // Überprüfen, ob in jedem Block an jeder Postion die gleiche Vertauschung protokolliert wurde
             Boolean isCorrect = true;
 
-            chars:
-            for (int charPosition = 0; charPosition < blockLength; charPosition++)
-            {
-                Integer currentValue = -1;
-
-                for (Map<Integer, Integer> charMapping : foundCharsBlockProtocol)
-                {
-                    // Finde ersten
-                    if (charMapping.containsKey(charPosition) && currentValue == -1)
-                    {
-                        currentValue = charMapping.get(charPosition);
-                        continue;
-                    }
-
-                    if (charMapping.containsKey(charPosition) && currentValue != -1 && charMapping.get(charPosition) != currentValue)
-                    {
-                        isCorrect = false;
-                        break chars;
-                    }
-                }
-            }
-
             // Wenn Vertauschungen überall gleich, kann Sigma bestimmt werden
             if (isCorrect)
             {
                 Integer[] sigma = new Integer[blockLength];
-
-                for (Map<Integer, Integer> charMapping : foundCharsBlockProtocol)
+                blockLengths : for (int i = 0; i < blockLength; i++)
                 {
-                    for (int i = 0; i < blockLength; i++)
+                    for (int j = 0; j < foundCharsBlockProtocol.size(); j++)
                     {
-                        if (charMapping.containsKey(i))
-                        {
-                            sigma[i] = charMapping.get(i);
+                        Map<Integer, Integer> charMapping = foundCharsBlockProtocol.get(j);
+
+                        for (Map.Entry<Integer, Integer> entry : charMapping.entrySet()) {
+                            if(entry.getValue() == i)
+                            {
+                                if(sigma[entry.getKey()] != null)
+                                {
+                                    // ungültiges Sigma, da eine Position nicht zweimal vergeben werden kann
+                                    continue protocols;
+                                }
+
+                                if(j == 0)
+                                {
+                                    sigma[entry.getKey()] = blockLength - charMapping.size() + i;
+                                }
+                                else
+                                {
+                                    sigma[entry.getKey()] =  i - foundCharsBlockProtocol.get(j - 1).size();
+                                }
+                                continue blockLengths;
+                            }
                         }
                     }
                 }
@@ -203,6 +200,9 @@ public class ColumnTranspositionDecrypter
     private static Boolean FindKnownWord(String[] cipherTextBlocks, Integer currentBlock, String knownWord, Integer currentKnownWordCharPosition,
                                          Integer currentKnownWordBlockRange, Integer maxKnownWordBlockRange, List<Map<Integer, Integer>> usedChars, List<List<Map<Integer, Integer>>> result)
     {
+
+        int blockLength = cipherTextBlocks[currentBlock].length();
+
         if (currentKnownWordCharPosition == knownWord.length())
         {
             // Add Ergebnis
@@ -210,7 +210,6 @@ public class ColumnTranspositionDecrypter
             return true;
         }
 
-        int blockLength = cipherTextBlocks[currentBlock].length();
         Character currentChar = knownWord.charAt(currentKnownWordCharPosition);
 
         for (int charPosition = 0; charPosition < blockLength; charPosition++)
@@ -223,7 +222,7 @@ public class ColumnTranspositionDecrypter
 
             if (cipherTextBlocks[currentBlock].charAt(charPosition) == currentChar)
             {
-                usedChars.get(currentBlock).put(charPosition, (currentKnownWordCharPosition + 1) % blockLength);
+                usedChars.get(currentBlock).put(charPosition, currentKnownWordCharPosition);
                 Boolean isknownWordFound = FindKnownWord(cipherTextBlocks, currentBlock, knownWord, currentKnownWordCharPosition + 1, currentKnownWordBlockRange, maxKnownWordBlockRange, usedChars, result);
 
                 if (currentKnownWordBlockRange < maxKnownWordBlockRange && currentBlock + 1 < cipherTextBlocks.length && !isknownWordFound)

@@ -3,11 +3,14 @@ package presentation.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
+import javafx.util.Callback;
 import javafx.util.Pair;
 import presentation.Main;
+import presentation.common.ResultCell;
 import presentation.models.ResultModel;
 
 import java.io.IOException;
@@ -32,6 +35,13 @@ public class ResultController
     @FXML
     public void initialize()
     {
+        blockLengthListView.setCellFactory(new Callback<ListView<Pair<Integer, String>>, ListCell<Pair<Integer, String>>>() {
+            @Override
+            public ListCell<Pair<Integer, String>> call(ListView<Pair<Integer, String>> param) {
+                return new ResultCell();
+            }
+        });
+
         blockLengthListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         blockLengthListView.itemsProperty().bind(this.model.resultsProperty());
         blockLengthListView.getSelectionModel().selectedItemProperty().addListener( (observable, oldValue, newValue) ->

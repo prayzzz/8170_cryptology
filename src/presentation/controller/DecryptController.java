@@ -42,17 +42,6 @@ public class DecryptController
         Bindings.bindBidirectional(knownWordTextField.textProperty(), model.knownWordProperty());
 
         decryptButton.disableProperty().bind(model.knownWordProperty().length().lessThan(2).or(model.cypherTextProperty().isEmpty()));
-
-        // Demo purpose
-        try
-        {
-            model.setCypherText(new String(Files.readAllBytes(new File("C:\\Users\\Patrick\\Desktop\\asd.txt").toPath())));
-            model.setKnownWord("scelerisque");
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
     }
 
     public void OpenMainView(ActionEvent actionEvent)
