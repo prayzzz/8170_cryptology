@@ -17,9 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Patrick on 17.01.2015.
- */
 public class ResultController
 {
     public ListView blockLengthListView;
@@ -35,12 +32,7 @@ public class ResultController
     @FXML
     public void initialize()
     {
-        blockLengthListView.setCellFactory(new Callback<ListView<Pair<Integer, String>>, ListCell<Pair<Integer, String>>>() {
-            @Override
-            public ListCell<Pair<Integer, String>> call(ListView<Pair<Integer, String>> param) {
-                return new ResultCell();
-            }
-        });
+        blockLengthListView.setCellFactory(param -> new ResultCell());
 
         blockLengthListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         blockLengthListView.itemsProperty().bind(this.model.resultsProperty());
@@ -50,6 +42,9 @@ public class ResultController
             });
     }
 
+    /**
+     * Writes the given Map<T,List<S>> to the model as flat list
+     **/
     public void setResult(Map<Integer, List<String>> result)
     {
         for (Map.Entry<Integer, List<String>> entry : result.entrySet())

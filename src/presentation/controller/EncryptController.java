@@ -1,7 +1,7 @@
 package presentation.controller;
 
 import application.ColumnTransposition;
-import application.StringHelper;
+import application.helper.StringHelper;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

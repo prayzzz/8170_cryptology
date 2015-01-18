@@ -1,12 +1,13 @@
 package application;
 
+import application.helper.ArrayHelper;
+import application.helper.MathHelper;
+import application.helper.StringHelper;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * Created by Patrick on 07.01.2015.
- */
 public class ColumnTranspositionDecrypter
 {
     public static Map<Integer, List<String>> Decrypt(String cipherText, String knownWord)
@@ -15,6 +16,8 @@ public class ColumnTranspositionDecrypter
 
         Map<Integer, List<String>> overallResults = new HashMap<>();
 
+        // probiere jede Blocklaenge aus
+        // aufhoeren nach kown-word Laenge + 2, um nicht zu viele moegliche sigmas zu haben
         for (int blockLength = 1; blockLength <= knownWord.length() + 2; blockLength++)
         {
             // Teilbarkeit muss gegeben sein, da String aufgefüllt wurde
@@ -25,9 +28,10 @@ public class ColumnTranspositionDecrypter
 
             String[] cipherTextBlocks = ReverseReadColumnWise(cipherText, maxBlockLength, blockLength);
 
+            // ueber wieviele Bloecke sich das Wort max. erstrecken kann
             Integer maxKnownWordBlockRange = ((knownWord.length() - 2) / blockLength) + 2;
-            List<Map<Integer, Integer>> usedChars = new ArrayList<>();
 
+            List<Map<Integer, Integer>> usedChars = new ArrayList<>();
             for (int i = 0; i < cipherTextBlocks.length; i++)
             {
                 usedChars.add(new HashMap<>());
@@ -37,11 +41,15 @@ public class ColumnTranspositionDecrypter
 
             for (int startingBlock = 0; startingBlock < cipherTextBlocks.length; startingBlock++)
             {
+                // Hokus-Pokus, simsalabim
                 FindKnownWord(cipherTextBlocks, startingBlock, knownWord, 0, 1, maxKnownWordBlockRange, usedChars, foundCharsProtocol);
             }
 
+            // mögliche Sigmas auswerten
+            // es kann mehrere Loesungen zu einer Blocklaenge geben
             for (Integer[] sigma : GetSigmas(blockLength, foundCharsProtocol))
             {
+                ArrayHelper.print(sigma);
                 String[] decryptedBlocks = StringHelper.ShuffleStringBlocks(sigma, cipherTextBlocks);
 
                 StringBuilder builder = new StringBuilder();
@@ -86,63 +94,68 @@ public class ColumnTranspositionDecrypter
 
     private static Set<Integer[]> GetSigmas(int blockLength, List<List<Map<Integer, Integer>>> foundCharsProtocol)
     {
-        Set<Integer[]> sigmas = new TreeSet<Integer[]>(new Comparator<Integer[]>() {
+        Set<Integer[]> sigmas = new TreeSet<Integer[]>(new Comparator<Integer[]>()
+        {
             @Override
-            public int compare(Integer[] o1, Integer[] o2) {
+            public int compare(Integer[] o1, Integer[] o2)
+            {
                 return Arrays.equals(o1, o2) ? 0 : 1;
             }
         });
 
-        protocols : for (List<Map<Integer, Integer>> foundCharsBlockProtocol : foundCharsProtocol)
+        // Iteriere ueber alle Protokolle
+        protocols:
+        for (List<Map<Integer, Integer>> blockProtocols : foundCharsProtocol)
         {
-            // Entferne alle Blöcke, in denen kein Teil des Know-Words gefunden wurde
-            foundCharsBlockProtocol.removeIf(x -> x.size() == 0);
+            // Entferne alle Bloecke, in denen kein Teil des Know-Words gefunden wurde
+            blockProtocols.removeIf(x -> x.size() == 0);
 
-            // Überprüfen, ob in jedem Block an jeder Postion die gleiche Vertauschung protokolliert wurde
-            Boolean isCorrect = true;
-
-            // Wenn Vertauschungen überall gleich, kann Sigma bestimmt werden
-            if (isCorrect)
+            Integer[] sigma = new Integer[blockLength];
+            blockLengths:
+            for (int positionInBlock = 0; positionInBlock < blockLength; positionInBlock++)
             {
-                Integer[] sigma = new Integer[blockLength];
-                blockLengths : for (int i = 0; i < blockLength; i++)
+                for (int currentBlock = 0; currentBlock < blockProtocols.size(); currentBlock++)
                 {
-                    for (int j = 0; j < foundCharsBlockProtocol.size(); j++)
+                    Map<Integer, Integer> charMapping = blockProtocols.get(currentBlock);
+
+                    for (Map.Entry<Integer, Integer> entry : charMapping.entrySet())
                     {
-                        Map<Integer, Integer> charMapping = foundCharsBlockProtocol.get(j);
-
-                        for (Map.Entry<Integer, Integer> entry : charMapping.entrySet()) {
-                            if(entry.getValue() == i)
-                            {
-                                if(sigma[entry.getKey()] != null)
-                                {
-                                    // ungültiges Sigma, da eine Position nicht zweimal vergeben werden kann
-                                    continue protocols;
-                                }
-
-                                if(j == 0)
-                                {
-                                    sigma[entry.getKey()] = blockLength - charMapping.size() + i;
-                                }
-                                else
-                                {
-                                    sigma[entry.getKey()] =  i - foundCharsBlockProtocol.get(j - 1).size();
-                                }
-                                continue blockLengths;
-                            }
+                        // Char für positionInBlock gefunden?
+                        if (entry.getValue() != positionInBlock)
+                        {
+                            continue;
                         }
+
+                        // Sigma-Stelle breits vergeben? Wenn ja, dann weiter zum naechsten Protokoll
+                        if (sigma[entry.getKey()] != null)
+                        {
+                            continue protocols;
+                        }
+
+                        if (currentBlock == 0)
+                        {
+                            // beim ersten Block von hinten auffuellen
+                            sigma[entry.getKey()] = blockLength - charMapping.size() + positionInBlock;
+                        }
+                        else
+                        {
+                            // ansonsten von vorn auffuellen
+                            sigma[entry.getKey()] = positionInBlock - blockProtocols.get(currentBlock - 1).size();
+                        }
+
+                        continue blockLengths;
                     }
                 }
+            }
 
-                // Ist Sigma vollständig, oder fehlen Zuordununge (max. 2)
-                if (IsSigmaComplete(sigma))
-                {
-                    sigmas.add(sigma);
-                }
-                else
-                {
-                    sigmas.addAll(GetFilledSigmas(sigma));
-                }
+            // Ist Sigma vollständig, oder fehlen Zuordununge (max. 2)
+            if (IsSigmaComplete(sigma))
+            {
+                sigmas.add(sigma);
+            }
+            else
+            {
+                sigmas.addAll(GetFilledSigmas(sigma));
             }
         }
 

@@ -1,9 +1,12 @@
 package application;
 
+import application.helper.ArrayHelper;
+import application.helper.StringHelper;
+
 import java.util.Random;
 
 /**
- * Created by Patrick on 18.12.2014.
+ * Encrypts the given text with the given blocklength
  */
 public class ColumnTransposition
 {

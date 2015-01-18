@@ -1,4 +1,4 @@
-package application;
+package application.helper;
 
 /**
  * Created by Patrick on 12.01.2015.

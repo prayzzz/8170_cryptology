@@ -5,6 +5,7 @@ import javafx.util.Pair;
 
 /**
  * Created by Georg on 17.01.2015.
+ * Displays the key of the given pair
  */
 public class ResultCell extends ListCell<Pair<Integer, String>> {
     @Override
