@@ -112,7 +112,7 @@ public class ColumnTranspositionDecrypter
 
             Integer[] sigma = new Integer[blockLength];
             blockLengths:
-            for (int positionInBlock = 0; positionInBlock < blockLength; positionInBlock++)
+            for (int positionInKnownWord = 0; positionInKnownWord < blockLength; positionInKnownWord++)
             {
                 for (int currentBlock = 0; currentBlock < blockProtocols.size(); currentBlock++)
                 {
@@ -120,8 +120,8 @@ public class ColumnTranspositionDecrypter
 
                     for (Map.Entry<Integer, Integer> entry : charMapping.entrySet())
                     {
-                        // Char für positionInBlock gefunden?
-                        if (entry.getValue() != positionInBlock)
+                        // Char für positionInKnownWord gefunden?
+                        if (entry.getValue() != positionInKnownWord)
                         {
                             continue;
                         }
@@ -135,12 +135,12 @@ public class ColumnTranspositionDecrypter
                         if (currentBlock == 0)
                         {
                             // beim ersten Block von hinten auffuellen
-                            sigma[entry.getKey()] = blockLength - charMapping.size() + positionInBlock;
+                            sigma[entry.getKey()] = blockLength - charMapping.size() + positionInKnownWord;
                         }
                         else
                         {
                             // ansonsten von vorn auffuellen
-                            sigma[entry.getKey()] = positionInBlock - blockProtocols.get(currentBlock - 1).size();
+                            sigma[entry.getKey()] = positionInKnownWord - blockProtocols.get(currentBlock - 1).size();
                         }
 
                         continue blockLengths;
