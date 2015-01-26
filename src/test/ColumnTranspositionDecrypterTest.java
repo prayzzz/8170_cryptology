@@ -12,8 +12,9 @@ public class ColumnTranspositionDecrypterTest
     @Test
     public void testDecrypt() throws Exception
     {
-        String cipherText = "rpdra,seainiDLmulieocuice.esosmcetdsgtRoimottntrpilS";
-        String knowWord = "ipsum";
+        //String cipherText = "rpdra,seainiDLmulieocuice.esosmcetdsgtRoimottntrpilS";
+        String cipherText = "a,neWflmNio.leaslEHoimtf";
+        String knowWord = "Wolff";
 
         Map<Integer, List<String>> result = ColumnTranspositionDecrypter.Decrypt(cipherText, knowWord);
 
