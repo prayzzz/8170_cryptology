@@ -1,0 +1,52 @@
+*.class
+ 
+# Eclipse
+ 
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+ 
+# Directories #
+/build/
+/bin/
+target/
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+ 
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# netbeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# Intellij
+.idea/
+*.iml
+*.iws
+/out/
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/

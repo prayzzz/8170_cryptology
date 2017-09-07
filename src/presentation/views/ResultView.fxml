@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<GridPane hgap="5.0" minWidth="500.0" vgap="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentation.controller.ResultController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" />
+        <ColumnConstraints hgrow="SOMETIMES" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="-Infinity" prefHeight="200.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <ListView fx:id="blockLengthListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
+        <TextArea fx:id="plainTextTextArea" editable="false" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <font>
+                <Font name="Consolas" size="12.0" />
+            </font>
+        </TextArea>
+        <Label text="block-length" />
+        <Label text="plain-text" GridPane.columnIndex="1" />
+        <Button minWidth="75.0" mnemonicParsing="false" onAction="#OpenMainView" text="back" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+    </children>
+    <opaqueInsets>
+        <Insets />
+    </opaqueInsets>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+    </padding>
+</GridPane>
