@@ -1,3 +1,3 @@
-# Cryptology (Kryptology)
+# Cryptology (Kryptologie)
 
-* cryptobob: reverse a transposition
+* cryptobob: reverse a transposition (done with [ZickZakk](https://github.com/ZickZakk) and [ElsorDude](https://github.com/ElsorDude))
